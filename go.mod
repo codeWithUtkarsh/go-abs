@@ -1,4 +1,4 @@
-module github.com/jianbo-zh/ipfs-storage
+module github.com/codeWithUtkarsh/go-abs
 
 go 1.16
 

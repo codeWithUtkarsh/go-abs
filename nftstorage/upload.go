@@ -15,11 +15,6 @@ import (
 
 func (cli *client) Upload(ctx context.Context, file ipfsstorage.UploadParam) (cid string, err error) {
 
-	if file.Size > MAX_REQUEST_BODY_SIZE {
-		err = ErrRequestBodyLimit
-		return
-	}
-
 	url, _ := url.Parse(cli.conf.endpoint + "/upload")
 
 	req := http.Request{
