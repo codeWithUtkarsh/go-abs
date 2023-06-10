@@ -9,12 +9,14 @@ import (
 	"net/http"
 )
 
-func (cli *client) Status(ctx context.Context, cid string) (pinStatus string, err error) {
+func (cli *client) Status(ctx context.Context, cid string) (pinStatus map[string]interface{}, err error) {
 
 	url := cli.conf.Endpoint + "/check/" + cid
+	response := make(map[string]interface{})
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return "", errors.New("failed to create HTTP request")
+		return response, errors.New("failed to create HTTP request")
 	}
 
 	req.Header.Set("Authorization", "Bearer "+cli.conf.AccessToken)
@@ -23,24 +25,23 @@ func (cli *client) Status(ctx context.Context, cid string) (pinStatus string, er
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", errors.New("failed to send HTTP request")
+		return response, errors.New("failed to send HTTP request")
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", errors.New("failed to read response body")
+		return response, errors.New("failed to read response body")
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("[%d] %s", resp.StatusCode, string(body))
+		return response, fmt.Errorf("[%d] %s", resp.StatusCode, string(body))
 	}
 
-	var response NftSuccessResponse
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return "", errors.New("failed to unmarshal response JSON")
+		return response, errors.New("failed to unmarshal response JSON")
 	}
 
-	return response.Value.Pin.CID, nil
+	return response, nil
 }

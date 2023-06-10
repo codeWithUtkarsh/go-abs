@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/codeWithUtkarsh/go-abs/abs"
-	"github.com/codeWithUtkarsh/go-abs/handler/model"
+	model "github.com/codeWithUtkarsh/go-abs/handler/models"
 	nft "github.com/codeWithUtkarsh/go-abs/nftstorage"
 	_ "github.com/go-sql-driver/mysql"
 	swg "github.com/go-swagno/swagno"
@@ -17,9 +17,6 @@ import (
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
-
-var requestBody interface{}
-var err []error
 
 func Create(w http.ResponseWriter, r *http.Request) {
 
@@ -35,14 +32,16 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	client, _ := nft.NewClient("nft", nft.WithToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDk3ODMwMGIzNUMzOEM3NzMxYWNDNjk4NDFiODU4NDNiRmIxRjExN0QiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0ODY2MjM1MDcwNiwibmFtZSI6Im9ydGVsaXVzX3Nib21fbGVkZ2VyX2RlbW8ifQ.egQzHqDB83UoK7ynE4fn4dhgIKWLhPP1B9E6qey4KHM"))
 	clientHub := abs.NewClientHub(client)
 
-	uploadParam := abs.UploadParam{IOReader: reader}
+	uploadParam := abs.Payload{IOReader: reader}
 	response, uploadErrors := clientHub.Upload(context.Background(), uploadParam)
 
 	if len(uploadErrors) != 0 {
 		panic(uploadErrors[0].Error())
 	}
 	fmt.Println("Upload Results:", response)
-	json.NewEncoder(w).Encode(response)
+
+	result := model.GenericResponse{Result: "success", Metadata: response[0].Metadata}
+	json.NewEncoder(w).Encode(result)
 }
 
 func GetStatus(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +61,8 @@ func GetStatus(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	json.NewEncoder(w).Encode(response)
+	result := model.GenericResponse{Result: "success", Metadata: response[0].Metadata}
+	json.NewEncoder(w).Encode(result)
 }
 
 func SetSwagger(myRouter *mux.Router) {

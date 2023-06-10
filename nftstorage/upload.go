@@ -11,12 +11,14 @@ import (
 	abs "github.com/codeWithUtkarsh/go-abs/abs"
 )
 
-func (cli *client) Upload(ctx context.Context, file abs.UploadParam) (cid string, err error) {
+func (cli *client) Upload(ctx context.Context, file abs.Payload) (cid map[string]interface{}, err error) {
 
 	url := cli.conf.Endpoint + "/upload"
+	response := make(map[string]interface{})
+
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, file.IOReader)
 	if err != nil {
-		return "", errors.New("failed to create HTTP request")
+		return response, errors.New("failed to create HTTP request")
 	}
 
 	req.Header.Set("Authorization", "Bearer "+cli.conf.AccessToken)
@@ -25,26 +27,25 @@ func (cli *client) Upload(ctx context.Context, file abs.UploadParam) (cid string
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return "", errors.New("failed to send HTTP request")
+		return response, errors.New("failed to send HTTP request")
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", errors.New("failed to read response body")
+		return response, errors.New("failed to read response body")
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("[%d] %s", resp.StatusCode, string(body))
+		return response, fmt.Errorf("[%d] %s", resp.StatusCode, string(body))
 	}
 
-	var response NftSuccessResponse
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return "", errors.New("failed to unmarshal response JSON")
+		return response, errors.New("failed to unmarshal response JSON")
 	}
 
 	fmt.Printf("%s", string(body))
 
-	return response.Value.CID, nil
+	return response, nil
 }

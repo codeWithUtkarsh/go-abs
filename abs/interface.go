@@ -5,22 +5,20 @@ import (
 	"io"
 )
 
+type Metadata = map[string]interface{}
+
 type Cid = string
 type PinStatus = string
 
 type Client interface {
-	Upload(context.Context, UploadParam) (Cid, error)
-	Status(context.Context, Cid) (PinStatus, error)
+	Upload(context.Context, Payload) (Metadata, error)
+	Status(context.Context, Cid) (Metadata, error)
 }
 
-type UploadParam struct {
+type Payload struct {
 	IOReader io.Reader `json:"IOReader"`
 }
 
-type UploadResult struct {
-	CID string `json:"cid"`
-}
-
-type StatusResult struct {
-	Status PinStatus `json:"status"`
+type Result struct {
+	Metadata map[string]interface{} `json:"metadata"`
 }
