@@ -3,7 +3,10 @@ module github.com/codeWithUtkarsh/go-abs
 go 1.16
 
 require (
-	github.com/alanshaw/go-carbites v0.5.0
-	github.com/jianbo-zh/go-errors v1.1.0
-	github.com/jianbo-zh/go-log v0.0.0-20211126081805-80b2eb71e535
+	github.com/go-sql-driver/mysql v1.7.1
+	github.com/go-swagno/swagno v0.5.0
+	github.com/go-swagno/swagno-http v0.0.0-20220905203049-935bab5403fa
+	github.com/gorilla/mux v1.8.0
+	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.10.9
 )

@@ -1,32 +1,32 @@
 package nftstorage
 
-const endpoint = "https://api.nft.storage"
+const defaultEndpoint = "https://api.nft.storage"
 
-type clientConfig struct {
-	mimes       []string
-	endpoint    string
-	accesstoken string
+type ClientConfig struct {
+	Mimes       []string
+	Endpoint    string
+	AccessToken string
 }
 
-type Option func(*clientConfig) error
+type Option func(*ClientConfig) error
 
 func WithEndpoint(endpoint string) Option {
-	return func(nsc *clientConfig) error {
-		nsc.endpoint = endpoint
+	return func(cfg *ClientConfig) error {
+		cfg.Endpoint = endpoint
 		return nil
 	}
 }
 
 func WithToken(accessToken string) Option {
-	return func(nsc *clientConfig) error {
-		nsc.accesstoken = accessToken
+	return func(cfg *ClientConfig) error {
+		cfg.AccessToken = accessToken
 		return nil
 	}
 }
 
 func WithMimes(mimes ...string) Option {
-	return func(nsc *clientConfig) error {
-		nsc.mimes = mimes
+	return func(cfg *ClientConfig) error {
+		cfg.Mimes = mimes
 		return nil
 	}
 }

@@ -1,20 +1,12 @@
 package nftstorage
 
 import (
-	"errors"
-
-	ipfsstorage "github.com/codeWithUtkarsh/go-abs"
+	abs "github.com/codeWithUtkarsh/go-abs/abs"
 )
-
-const (
-	MAX_REQUEST_BODY_SIZE = 1024 * 1024 * 99 // 99 MiB
-)
-
-var ErrRequestBodyLimit = errors.New("body size max limit 99MiB")
 
 type client struct {
 	name string
-	conf clientConfig
+	conf ClientConfig
 }
 
 func (c *client) Name() string {
@@ -22,8 +14,8 @@ func (c *client) Name() string {
 }
 
 func NewClient(name string, opts ...Option) (*client, error) {
-	conf := clientConfig{
-		endpoint: endpoint,
+	conf := ClientConfig{
+		Endpoint: defaultEndpoint,
 	}
 
 	for _, opt := range opts {
@@ -37,4 +29,4 @@ func NewClient(name string, opts ...Option) (*client, error) {
 	return &cli, nil
 }
 
-var _ ipfsstorage.Client = (*client)(nil)
+var _ abs.Client = (*client)(nil)

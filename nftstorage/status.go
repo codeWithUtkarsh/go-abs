@@ -7,51 +7,40 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
-
-	ipfsstorage "github.com/codeWithUtkarsh/go-abs"
 )
 
-func (cli *client) Status(ctx context.Context, cid string) (pinStatus ipfsstorage.PinStatus, err error) {
+func (cli *client) Status(ctx context.Context, cid string) (pinStatus string, err error) {
 
-	url, _ := url.Parse(cli.conf.endpoint + "/check/" + cid)
-
-	req := http.Request{
-		URL: url,
-		Header: http.Header{
-			"Authorization": {"Bearer " + cli.conf.accesstoken},
-			// "Content-Type":  {"application/car"},
-			"Accept": {"application/json"},
-		},
-		Method: http.MethodGet,
-	}
-
-	httpCli := http.Client{}
-
-	response, err := httpCli.Do(&req)
+	url := cli.conf.Endpoint + "/check/" + cid
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		err = errors.New("http request error")
-		return
+		return "", errors.New("failed to create HTTP request")
 	}
-	defer response.Body.Close()
 
-	resBytes, err := ioutil.ReadAll(response.Body)
+	req.Header.Set("Authorization", "Bearer "+cli.conf.AccessToken)
+	req.Header.Set("Accept", "application/json")
+
+	client := http.Client{}
+	resp, err := client.Do(req)
 	if err != nil {
-		err = errors.New("ioutile read body error")
-		return
+		return "", errors.New("failed to send HTTP request")
 	}
+	defer resp.Body.Close()
 
-	if response.StatusCode != http.StatusOK {
-		err = errors.New(fmt.Sprintf("[%d]%s", response.StatusCode, string(resBytes)))
-		return
-	}
-
-	var res Response200
-	err = json.Unmarshal(resBytes, &res)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		err = errors.New("json unmarshal response error")
-		return
+		return "", errors.New("failed to read response body")
 	}
 
-	return res.Value.Pin.Status, nil
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("[%d] %s", resp.StatusCode, string(body))
+	}
+
+	var response NftSuccessResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return "", errors.New("failed to unmarshal response JSON")
+	}
+
+	return response.Value.Pin.CID, nil
 }
