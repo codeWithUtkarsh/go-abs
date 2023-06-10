@@ -1,19 +1,20 @@
-package ipfsstorage
+package main
 
 import (
 	"context"
 )
 
 type ClientHub struct {
-	cli Client
+	clis []Client
 }
 
-func NewClientHub(cli Client) *Client {
+func NewClientHub(clis ...Client) *ClientHub {
+	cli := ClientHub{clis: clis}
 	return &cli
 }
 
 func (c *ClientHub) Upload(ctx context.Context, file UploadParam) (ress []UploadResult, errs []error) {
-	res, err := c.cli.Upload(ctx, file)
+	res, err := c.clis[0].Upload(ctx, file)
 	if err != nil {
 		errs = append(errs, err)
 	}
@@ -23,7 +24,7 @@ func (c *ClientHub) Upload(ctx context.Context, file UploadParam) (ress []Upload
 }
 
 func (c *ClientHub) Status(ctx context.Context, cid Cid) (ress []StatusResult, errs []error) {
-	res, err := c.cli.Status(ctx, cid)
+	res, err := c.clis[0].Status(ctx, cid)
 	if err != nil {
 		errs = append(errs, err)
 	}

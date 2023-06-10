@@ -1,4 +1,4 @@
-package ipfsstorage
+package main
 
 import (
 	"context"
