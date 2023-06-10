@@ -3,7 +3,7 @@ package nftstorage
 import (
 	"errors"
 
-	ipfsstorage "github.com/codeWithUtkarsh/go-abs"
+	main "github.com/codeWithUtkarsh/go-abs"
 )
 
 const (
@@ -37,4 +37,4 @@ func NewClient(name string, opts ...Option) (*client, error) {
 	return &cli, nil
 }
 
-var _ ipfsstorage.Client = (*client)(nil)
+var _ main.Client = (*client)(nil)

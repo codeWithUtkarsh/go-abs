@@ -4,15 +4,14 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-
-	nft "github.com/codeWithUtkarsh/go-abs/nftstorage/"
+     impfstorage "github.com/codeWithUtkarsh/go-abs/impfstorage"
 )
 
 func main() {
 	jsonData := []byte(`{"name": "John", "age": 30}`)
 	reader := bytes.NewReader(jsonData)
 
-	client := nft.NewClient("nft", nft.WithEndpoint)
+	client := impfstorage.client.NewClient("nft", impfstorage.WithEndpoint)
 	clientHub := NewClientHub(client)
 
 	uploadParam := UploadParam{IOReader: reader}
