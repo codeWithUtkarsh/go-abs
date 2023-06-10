@@ -9,8 +9,8 @@ import (
 	"net/http"
 
 	"github.com/codeWithUtkarsh/go-abs/abs"
+	"github.com/codeWithUtkarsh/go-abs/factory"
 	model "github.com/codeWithUtkarsh/go-abs/handler/models"
-	nft "github.com/codeWithUtkarsh/go-abs/nftstorage"
 	_ "github.com/go-sql-driver/mysql"
 	swg "github.com/go-swagno/swagno"
 	"github.com/go-swagno/swagno-http/swagger"
@@ -29,11 +29,12 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	jsonData := []byte(body)
 	reader := bytes.NewReader(jsonData)
 
-	client, _ := nft.NewClient("nft", nft.WithToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDk3ODMwMGIzNUMzOEM3NzMxYWNDNjk4NDFiODU4NDNiRmIxRjExN0QiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0ODY2MjM1MDcwNiwibmFtZSI6Im9ydGVsaXVzX3Nib21fbGVkZ2VyX2RlbW8ifQ.egQzHqDB83UoK7ynE4fn4dhgIKWLhPP1B9E6qey4KHM"))
-	clientHub := abs.NewClientHub(client)
+	dFactory := factory.DataSourceFactory{}
+	client, _ := dFactory.CreateDatasourceClient()
 
-	uploadParam := abs.Payload{IOReader: reader}
-	response, uploadErrors := clientHub.Upload(context.Background(), uploadParam)
+	clientHub := abs.NewClientHub(client)
+	payload := abs.Payload{IOReader: reader}
+	response, uploadErrors := clientHub.Upload(context.Background(), payload)
 
 	if len(uploadErrors) != 0 {
 		panic(uploadErrors[0].Error())
@@ -51,9 +52,8 @@ func GetStatus(w http.ResponseWriter, r *http.Request) {
 	// if err != nil {
 	// 	panic(err.Error())
 	// }
-	client, _ := nft.NewClient("nft",
-		nft.WithEndpoint("https://api.nft.storage"),
-		nft.WithToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDk3ODMwMGIzNUMzOEM3NzMxYWNDNjk4NDFiODU4NDNiRmIxRjExN0QiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0ODY2MjM1MDcwNiwibmFtZSI6Im9ydGVsaXVzX3Nib21fbGVkZ2VyX2RlbW8ifQ.egQzHqDB83UoK7ynE4fn4dhgIKWLhPP1B9E6qey4KHM"))
+	dFactory := factory.DataSourceFactory{}
+	client, _ := dFactory.CreateDatasourceClient()
 	clientHub := abs.NewClientHub(client)
 
 	response, err := clientHub.Status(context.Background(), "bafkreihn7cjn5gxhtdwp4ufjqdpozqxlhtcgv6z5ww5swivq22ix46x7uy")
