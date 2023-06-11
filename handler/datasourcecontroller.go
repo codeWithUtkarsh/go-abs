@@ -26,11 +26,13 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonData := []byte(body)
-	reader := bytes.NewReader(jsonData)
+	reader := bytes.NewReader(body)
 
 	dFactory := factory.DataSourceFactory{}
-	client, _ := dFactory.CreateDatasourceClient()
+	client, err := dFactory.CreateDatasourceClient()
+	if err != nil {
+		panic(err.Error())
+	}
 
 	clientHub := abs.NewClientHub(client)
 	payload := abs.Payload{IOReader: reader}
