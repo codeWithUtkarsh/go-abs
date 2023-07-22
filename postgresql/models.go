@@ -1,22 +1,20 @@
 package postgresql
 
-import "fmt"
-
 var onboardedEntitiesMap = map[string]interface{}{
 	"Account": Account{},
 }
 
-func getEntityObj(obj interface{}) {
+// func getEntityObj(obj interface{}) {
 
-	switch v := obj.(type) {
-	case Account:
-		p := v
-		fmt.Println("Created Account object:", p)
+// 	switch v := obj.(type) {
+// 	case Account:
+// 		p := v
+// 		fmt.Println("Created Account object:", p)
 
-	default:
-		fmt.Println("Unknown object type")
-	}
-}
+// 	default:
+// 		fmt.Println("Unknown object type")
+// 	}
+// }
 
 type Account struct {
 	ID       int    `json:"_id"`

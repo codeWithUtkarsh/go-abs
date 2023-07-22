@@ -25,7 +25,7 @@ func (cli *client) Upload(ctx context.Context, payload abs.Payload) (metadata ma
 	entity := p.Entity
 	persistantData := p.Payload
 
-	fmt.Println(entity)
+	// fmt.Println(entity)
 	obj, exists := onboardedEntitiesMap[entity]
 	if !exists {
 		fmt.Println(entity)
