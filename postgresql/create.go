@@ -26,14 +26,14 @@ func (cli *client) Upload(ctx context.Context, payload abs.Payload) (metadata ma
 	persistantData := p.Payload
 
 	fmt.Println(entity)
-	obj, exists := typesMap[entity]
+	obj, exists := onboardedEntitiesMap[entity]
 	if !exists {
 		fmt.Println(entity)
-		fmt.Println("Invalid object type")
+		fmt.Println("Invalid Entity type: You Need to onboard this entity definition by updation models.go in ./postgresql")
 		return
 	}
 
-	queryf := `INSERT INTO public.account (`
+	queryf := `INSERT INTO public.` + entity + ` (`
 	values := `VALUES (`
 
 	t := reflect.TypeOf(obj)

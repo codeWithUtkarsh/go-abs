@@ -2,7 +2,7 @@ package postgresql
 
 import "fmt"
 
-var typesMap = map[string]interface{}{
+var onboardedEntitiesMap = map[string]interface{}{
 	"Account": Account{},
 }
 

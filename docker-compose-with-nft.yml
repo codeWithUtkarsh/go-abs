@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  golang_app:
+    # image: go-abs
+    build:
+      context: .
+    ports:
+      - "8080:10000"
+    environment:
+      - DATA_SOURCE=NFT
+      - ENDPOINT=https://api.nft.storage
+      - API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDk3ODMwMGIzNUMzOEM3NzMxYWNDNjk4NDFiODU4NDNiRmIxRjExN0QiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0ODY2MjM1MDcwNiwibmFtZSI6Im9ydGVsaXVzX3Nib21fbGVkZ2VyX2RlbW8ifQ.egQzHqDB83UoK7ynE4fn4dhgIKWLhPP1B9E6qey4KHM
+
