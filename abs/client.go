@@ -2,6 +2,7 @@ package abs
 
 import (
 	"context"
+	"fmt"
 )
 
 type ClientHub struct {
@@ -14,6 +15,9 @@ func NewClientHub(clis ...Client) *ClientHub {
 }
 
 func (c *ClientHub) Upload(ctx context.Context, file Payload) (ress []Result, errs []error) {
+	fmt.Println(file)
+	fmt.Println(c)
+	fmt.Println(c.clis)
 	res, err := c.clis[0].Upload(ctx, file)
 	if err != nil {
 		errs = append(errs, err)
